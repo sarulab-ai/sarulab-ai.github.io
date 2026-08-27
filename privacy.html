@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — SARU LAB JARVIS</title>
+<style>
+  :root {
+    --bg: #faf9f6; --ink: #1c1a17; --muted: #6b6459; --line: #e6e1d6; --accent: #2f6f5e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #14120f; --ink: #ece7dd; --muted: #a39a8a; --line: #2c281f; --accent: #6fbfa6; }
+  }
+  :root[data-theme="dark"] { --bg: #14120f; --ink: #ece7dd; --muted: #a39a8a; --line: #2c281f; --accent: #6fbfa6; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Helvetica Neue", sans-serif;
+    line-height: 1.75;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 56px 24px 96px; }
+  .eyebrow { color: var(--muted); font-size: 0.85rem; margin-bottom: 6px; }
+  h1 { font-size: 1.7rem; margin: 0 0 8px; }
+  .updated { color: var(--muted); font-size: 0.85rem; margin-bottom: 40px; }
+  h2 { font-size: 1.05rem; margin: 36px 0 10px; color: var(--accent); }
+  p, li { margin: 0 0 12px; }
+  ul { padding-left: 1.3em; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.82rem; }
+  .no { color: var(--muted); }
+  .todo { background: rgba(230,160,60,0.14); border-left: 3px solid #c98a1f; padding: 10px 14px; border-radius: 6px; font-size: 0.9rem; }
+  a { color: var(--accent); }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">SARU LAB JARVIS</div>
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: 2026-08-27</div>
+
+  <h2>Who this applies to</h2>
+  <p>
+    SARU LAB JARVIS is a single-operator internal tool run by SARU LAB (「AI社員研究所」) for its own
+    social media accounts. It is <strong>not a public app</strong> — it does not have external end
+    users, and it does not collect data about, or from, anyone other than the accounts SARU LAB
+    itself owns and has explicitly connected to it. If you are a viewer of SARU LAB's public content
+    on Instagram, YouTube, note, Threads, or TikTok, this policy does not describe any data
+    collection about you personally — JARVIS only ever sees the same public, aggregate metrics
+    (like counts, view counts, etc.) that each platform's own creator tools already show to any
+    account owner about their own posts.
+  </p>
+
+  <h2>What JARVIS accesses via the TikTok API</h2>
+  <p>
+    Once TikTok approves this application, JARVIS is designed to use TikTok's official API for the
+    following, and only the following, on SARU LAB's own authorized TikTok account:
+  </p>
+  <table>
+    <tr><th>Data</th><th>Purpose</th></tr>
+    <tr><td>Video files and captions that SARU LAB itself has produced</td><td>Publishing them to SARU LAB's own TikTok account</td></tr>
+    <tr><td>Post-level performance metrics that TikTok's API exposes for those posts (for example: view count, like count, comment count, share count)</td><td>Measuring which content performs well, to improve future content</td></tr>
+    <tr><td>OAuth access/refresh tokens issued by TikTok for the authorized account</td><td>Authenticating JARVIS's API requests</td></tr>
+  </table>
+  <p class="no">
+    JARVIS does not request or process TikTok data beyond what is listed above. In particular, it
+    does not collect data about other TikTok users, viewers, or accounts, and — per TikTok's own
+    API — average watch time is not exposed through the API JARVIS uses and is therefore not
+    collected.
+  </p>
+
+  <h2>How data is stored</h2>
+  <ul>
+    <li>OAuth tokens and API credentials are stored locally using the operating system's own
+      encrypted credential store (macOS Keychain), the same mechanism SARU LAB already uses for its
+      Instagram and YouTube integrations.</li>
+    <li>Credentials are never written to log files, committed to source control, or displayed in
+      any public page — including this one.</li>
+    <li>Retrieved performance metrics are stored in SARU LAB's own private, non-public operational
+      records for its own analysis. They are not published or shared externally.</li>
+  </ul>
+
+  <h2>Sharing with third parties</h2>
+  <p>
+    JARVIS does not sell or share any TikTok data with third parties. The only data flow is between
+    JARVIS and TikTok's own API, for the sole purpose of publishing SARU LAB's own content and
+    reading back its own posts' performance metrics.
+  </p>
+
+  <h2>Retention &amp; deletion</h2>
+  <p>
+    SARU LAB retains performance metrics for as long as needed for its own content analysis.
+    Because JARVIS only accesses SARU LAB's own authorized account, revoking that authorization in
+    TikTok's own account settings stops all further data access immediately.
+  </p>
+
+  <h2>Changes to this policy</h2>
+  <p>
+    This policy will be updated if JARVIS's actual use of the TikTok API changes. The "Last
+    updated" date above will be revised accordingly — no data collection beyond what is described
+    here will begin without this page being updated first.
+  </p>
+
+  <h2>Contact</h2>
+  <div class="todo">
+    TODO: 正式な事業者名・所在地・連絡先メールアドレスを確定次第、ここに記載する(現時点では未確定の
+    ため、実在しない情報は記載していません)。
+  </div>
+
+  <footer>
+    <a href="index.html">← Back to SARU LAB JARVIS</a> &nbsp;|&nbsp; <a href="terms.html">Terms of Service</a>
+  </footer>
+</div>
+</body>
+</html>

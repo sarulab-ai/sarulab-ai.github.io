@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SARU LAB JARVIS</title>
+<style>
+  :root {
+    --bg: #faf9f6; --ink: #1c1a17; --muted: #6b6459; --line: #e6e1d6;
+    --accent: #2f6f5e; --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14120f; --ink: #ece7dd; --muted: #a39a8a; --line: #2c281f;
+      --accent: #6fbfa6; --card: #1c1914;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14120f; --ink: #ece7dd; --muted: #a39a8a; --line: #2c281f;
+    --accent: #6fbfa6; --card: #1c1914;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Helvetica Neue", sans-serif;
+    line-height: 1.7;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 64px 24px 96px; }
+  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .brand-mark { font-size: 2rem; }
+  .brand-name { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.01em; }
+  .tagline { color: var(--muted); font-size: 0.95rem; margin-bottom: 40px; }
+  h1 { font-size: 1.9rem; text-wrap: balance; margin: 8px 0 20px; }
+  h2 { font-size: 1.15rem; margin: 40px 0 12px; color: var(--accent); }
+  p { margin: 0 0 16px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px 24px; margin: 24px 0;
+  }
+  .platform-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; padding: 0; list-style: none; }
+  .platform-list li {
+    font-size: 0.82rem; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .platform-list li.active { color: var(--accent); border-color: var(--accent); font-weight: 600; }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--muted); }
+  footer a { color: var(--accent); text-decoration: none; margin-right: 18px; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <span class="brand-mark">🐒</span>
+    <span class="brand-name">SARU LAB JARVIS</span>
+  </div>
+  <div class="tagline">AI社員研究所 — Content Automation System</div>
+
+  <h1>Educational content, made and managed by an autonomous AI operations system.</h1>
+  <p>
+    SARU LAB JARVIS is an internal automation tool built and operated by <strong>SARU LAB
+    (「AI社員研究所」)</strong> — a Japan-based educational project that teaches AI-assisted work
+    habits to non-technical professionals through short-form video and articles, featuring the
+    character "サル所長" (Saru Shocho).
+  </p>
+  <p>
+    JARVIS plans, produces, quality-checks, publishes, and measures the results of SARU LAB's own
+    educational content across the social platforms SARU LAB operates on. It is a single-operator
+    tool: it only ever posts to accounts that SARU LAB itself owns and has explicitly authorized —
+    it is not a public or multi-tenant service, and it does not act on behalf of anyone else's account.
+  </p>
+
+  <div class="card">
+    <h2 style="margin-top:0">Platforms this tool operates on</h2>
+    <ul class="platform-list">
+      <li class="active">Instagram — live (Instagram Graph API)</li>
+      <li class="active">YouTube — live (YouTube Data / Analytics API)</li>
+      <li class="active">note — live (manual dashboard reporting, no API)</li>
+      <li class="active">Threads — live (browser-based publishing)</li>
+      <li>TikTok — in setup (this application)</li>
+    </ul>
+  </div>
+
+  <h2>What JARVIS does</h2>
+  <p>
+    For each platform it is connected to, JARVIS follows the same loop: draft a short educational
+    script → produce narration and video → run an automated + human-reviewed quality check against
+    SARU LAB's own content guidelines → publish → retrieve whatever performance metrics that
+    platform's official API makes available (views, likes, comments, etc.) → record the results so
+    future content can improve. No step in this loop involves any account, content, or data other
+    than SARU LAB's own.
+  </p>
+
+  <h2>Who operates this</h2>
+  <p>
+    SARU LAB is operated by an individual based in Japan. <em>[TODO: 正式な事業者名・所在地・連絡先を
+    確定次第記載]</em>
+  </p>
+
+  <footer>
+    <a href="terms.html">Terms of Service</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <div style="margin-top:12px">© SARU LAB (AI社員研究所)</div>
+  </footer>
+</div>
+</body>
+</html>
