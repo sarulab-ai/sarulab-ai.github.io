@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SARU LAB JARVIS — TikTok Authorization</title>
+<style>
+  :root {
+    --bg: #faf9f6; --ink: #1c1a17; --muted: #6b6459; --line: #e6e1d6;
+    --accent: #2f6f5e; --card: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Segoe UI", sans-serif;
+    line-height: 1.6; padding: 32px 20px;
+  }
+  main { max-width: 560px; margin: 0 auto; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 24px; margin-bottom: 16px;
+  }
+  h1 { font-size: 1.2rem; margin: 0 0 8px; }
+  .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+  .field { margin-bottom: 14px; }
+  .field-label {
+    font-size: 0.72rem; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.04em; margin-bottom: 4px;
+  }
+  .field-value {
+    font-family: ui-monospace, Menlo, monospace; font-size: 0.85rem;
+    background: #f3f0ea; border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 12px; word-break: break-all; user-select: all;
+  }
+  .field-value.empty { color: var(--muted); font-style: italic; }
+  .error { border-color: #c0392b; }
+  .error .field-value { background: #fbeceb; }
+  .note {
+    font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--line);
+    padding-top: 14px; margin-top: 4px;
+  }
+  .warn { color: #a0522d; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>TikTok Authorization Callback</h1>
+    <div class="sub">This page only displays what TikTok appended to the URL. Nothing here is
+      stored, logged, or sent anywhere by this page.</div>
+
+    <div class="field" id="row-code">
+      <div class="field-label">code</div>
+      <div class="field-value empty" id="val-code">(none)</div>
+    </div>
+    <div class="field" id="row-state">
+      <div class="field-label">state</div>
+      <div class="field-value empty" id="val-state">(none)</div>
+    </div>
+    <div class="field" id="row-scopes">
+      <div class="field-label">scopes</div>
+      <div class="field-value empty" id="val-scopes">(none)</div>
+    </div>
+    <div class="field error" id="row-error" style="display:none">
+      <div class="field-label">error</div>
+      <div class="field-value" id="val-error"></div>
+    </div>
+    <div class="field error" id="row-error-desc" style="display:none">
+      <div class="field-label">error_description</div>
+      <div class="field-value" id="val-error-desc"></div>
+    </div>
+
+    <div class="note">
+      <span class="warn">This authorization code is short-lived.</span> Copy the
+      <code>code</code> value above and complete the token exchange locally
+      (on the operator's own machine, using the client secret from the system
+      keychain) as soon as possible. This page never contacts any server and
+      never persists this value — closing or reloading this tab discards it
+      permanently.
+    </div>
+  </div>
+</main>
+<script>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    function setField(id, key) {
+      var v = params.get(key);
+      var el = document.getElementById(id);
+      if (v) {
+        el.textContent = v;
+        el.classList.remove('empty');
+      }
+    }
+    setField('val-code', 'code');
+    setField('val-state', 'state');
+    setField('val-scopes', 'scopes');
+
+    var err = params.get('error');
+    var errDesc = params.get('error_description');
+    if (err) {
+      document.getElementById('row-error').style.display = '';
+      document.getElementById('val-error').textContent = err;
+    }
+    if (errDesc) {
+      document.getElementById('row-error-desc').style.display = '';
+      document.getElementById('val-error-desc').textContent = errDesc;
+    }
+    // Deliberately no fetch/XHR/localStorage/cookie usage of any kind.
+    // Deliberately no history.replaceState scrubbing either, since nothing
+    // here is ever transmitted or saved beyond this single page view.
+  })();
+</script>
+</body>
+</html>
