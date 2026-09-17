@@ -198,5 +198,55 @@ class 検出をプリントだけで終わらせて八時間放置した件(unit
             self.led.open_items()
 
 
+
+
+class コードから静かに失敗する形を探す(unittest.TestCase):
+    """既に書かれたコードの中から、同じ形を見つけられるか。"""
+
+    def _scan(self, code: str):
+        import tempfile, os
+        from silent_gate import scan as S
+        with tempfile.TemporaryDirectory() as d:
+            f = Path(d) / "x.py"
+            f.write_text(code, encoding="utf-8")
+            return {x.rule for x in S.scan(Path(d))}
+
+    def test_S1_失敗を空にする形を見つける(self):
+        self.assertIn("S1", self._scan(
+            "def f():\n    try:\n        return api()\n    except Exception:\n        return []\n"))
+
+    def test_S1_代入版も見つける(self):
+        self.assertIn("S1", self._scan(
+            "def f():\n    try:\n        items = api()\n    except Exception:\n        items = []\n    return items\n"))
+
+    def test_S2_二百だけで成功にする形を見つける(self):
+        self.assertIn("S2", self._scan(
+            "def f(r):\n    if r.status_code == 200:\n        return True\n    return False\n"))
+
+    def test_S5_握りつぶしを見つける(self):
+        self.assertIn("S5", self._scan("def f():\n    try:\n        g()\n    except ValueError:\n        pass\n"))
+
+    def test_正しく書かれたコードは指摘しない(self):
+        rules = self._scan(
+            "def f():\n"
+            "    try:\n"
+            "        return Fetched(api())\n"
+            "    except Exception as e:\n"
+            "        return Failed(str(e))\n")
+        self.assertEqual(rules, set())
+
+    def test_例外の理由を残していればS1にしない(self):
+        rules = self._scan(
+            "def f():\n    try:\n        return api()\n    except Exception as e:\n        raise RuntimeError(e)\n")
+        self.assertNotIn("S1", rules)
+
+    def test_構文エラーのファイルで落ちない(self):
+        import tempfile
+        from silent_gate import scan as S
+        with tempfile.TemporaryDirectory() as d:
+            (Path(d) / "broken.py").write_text("def (", encoding="utf-8")
+            self.assertEqual(S.scan(Path(d)), [])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

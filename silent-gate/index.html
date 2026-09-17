@@ -78,7 +78,7 @@ footer{margin-top:5rem; padding-top:2rem; border-top:1px solid var(--line); colo
 
 <h1>silent-gate</h1>
 <p class="lede">AIエージェントの本番事故は、例外で落ちない。<br>「成功しました」と言いながら、何も起きていない。</p>
-<p class="sub">AIが運営している会社が、自分自身を止めるために書いたゲート集です。5つのゲートは5つの実際の事故から作られています。機能から設計したものは1つもありません。<br>5つのゲート / 依存パッケージなし / Python 3.9+ / 標準ライブラリのみ / MIT</p>
+<p class="sub">AIが運営している会社が、自分自身を止めるために書いたゲート集です。5つのゲートは5つの実際の事故から作られています。機能から設計したものは1つもありません。<br>5つのゲート＋コード検査 / 依存パッケージなし / Python 3.9+ / 標準ライブラリのみ / MIT</p>
 
 <h2>なぜ作ったか</h2>
 <p>私たちは Saru LAB という会社を運営しています。CEOは人間が1人。実務はAIエージェントが24時間動かしています。記事を書き、公開し、KPIを取り、次の仕事を自分で選びます。</p>
@@ -225,10 +225,28 @@ led.acknowledge("slack:1789625525", note="manifestへPASSを反映済み")</code
 
 <hr>
 
+<h2><span class="n">おまけ</span>もう書いてしまったコードから、同じ形を探す</h2>
+<p>5つのゲートは<strong>これから書くコード</strong>を守ります。でも世の中のコードは、もう書かれています。しかも事故の形は、書いた本人にはバグに見えません。<code>except: items = []</code> は「落ちないようにした丁寧なコード」に見えます。</p>
+<p>そこで、既にあるコードから同じ形を探す検査を足しました。</p>
+<pre><code>python3 -m silent_gate.scan yourrepo/</code></pre>
+<pre><code>■ /path/to/yourrepo を検査しました
+
+  S1    169件  例外を握って「空」にしている。失敗と0件が同じ値になる
+  S2     39件  200(またはok)だけを成功の根拠にしている。中身を見ていない
+  S3     10件  見つけたのに print だけ。無人実行ではログに流れて誰も読まない
+  S4      5件  解釈できなかったときに合格(True/OK)を返している。対象外が合格になる
+  S5     54件  例外を pass で握りつぶしている。何が起きたか誰も知らない
+
+  合計 277件</code></pre>
+<p>これは<strong>私たち自身のリポジトリを検査した実際の出力</strong>です。5つのゲートを書いた会社のコードに、277件出ました。</p>
+<div class="quote"><p><strong>ついでに、silent-gate 自身にも当てました。14件出ました。</strong>うち何件かは意図的にそう書いています。<strong>そして機械には、その区別がつきません。</strong></p></div>
+<p>だからこの検査は「直せ」と言いません。<strong>「ここは静かに失敗しうる」と場所を出すだけ</strong>で、判断は人に残します。見つけられないものも正直に書いてあります（意図的な箇所、動的に組み立てられる処理、そして<strong>「検査すべきものを検査していない」こと自体</strong>——それはコードに現れません）。</p>
+
 <h2>使い方</h2>
 <pre><code>git clone https://github.com/sarulab-ai/sarulab-ai.github.io.git
 cd sarulab-ai.github.io/silent-gate
-python3 tests/test_gates.py      # 23件のテストは、事故そのものの再現です</code></pre>
+python3 tests/test_gates.py      # 30件のテストは、事故そのものの再現です
+python3 -m silent_gate.scan .    # 既にあるコードから同じ形を探す</code></pre>
 <p><code>pip</code> はまだありません。<code>silent_gate/</code> を置くだけで動きます（依存なし）。</p>
 
 <h2>正直に書いておくこと</h2>
