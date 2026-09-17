@@ -105,5 +105,98 @@ class 見ていない動画を検品したと報告した件(unittest.TestCase):
         self.assertIn("音声を再生できない", s)
 
 
+
+
+class 連載順序ゲートが四本とも対象外になっていた件(unittest.TestCase):
+    """ID文字列から話数を読む実装で、命名規則の違う連載4本が全部素通りしていた。
+
+    返ってきていたのは OK。合格と見分けがつかなかった。
+    """
+
+    def setUp(self):
+        from silent_gate import guard, Inapplicable
+
+        @guard("連載順序")
+        def gate(entry):
+            # 当時の実装: IDから "EP<N>" を読む。読めなければ「連載ではない」
+            import re
+            m = re.search(r"EP(\d+)$", entry["id"])
+            if not m:
+                raise Inapplicable("IDから話数を読めない")
+            return entry.get("prev_published", False), "前話が未公開" if not entry.get("prev_published") else ""
+        self.gate = gate
+
+    def test_話数が読めない対象は合格にならない(self):
+        o = self.gate({"id": "FREE-ai-tool-jiko5-v1"})
+        self.assertFalse(o.passed)          # ← 当時はここが True 相当だった
+        self.assertTrue(o.blocked)
+        self.assertEqual(o.state, "inapplicable")
+        self.assertIn("適用できず", str(o))
+
+    def test_普通に判定できるものは今までどおり(self):
+        self.assertTrue(self.gate({"id": "SERIES-EP02", "prev_published": True}).passed)
+        self.assertFalse(self.gate({"id": "SERIES-EP02", "prev_published": False}).passed)
+
+    def test_一件も適用できていないゲートは信用できないと分かる(self):
+        from silent_gate import Coverage
+        cov = Coverage(self.gate, [{"id": "FREE-a-v1"}, {"id": "FREE-b-v1"},
+                                   {"id": "FREE-c-v1"}, {"id": "FREE-d-v1"}])
+        self.assertEqual(cov.applied, 0)
+        self.assertEqual(len(cov.failed), 0)      # 不合格0件。健全に見える
+        self.assertFalse(cov.trustworthy)         # しかし信用できない
+        self.assertIn("なにも守っていません", cov.summary())
+
+    def test_一部だけ適用できている場合も数が出る(self):
+        from silent_gate import Coverage
+        cov = Coverage(self.gate, [{"id": "S-EP01", "prev_published": True},
+                                   {"id": "FREE-x-v1"}])
+        self.assertEqual(cov.applied, 1)
+        self.assertEqual(len(cov.inapplicable), 1)
+        self.assertTrue(cov.trustworthy)
+        self.assertIn("合格として数えないでください", cov.summary())
+
+
+class 検出をプリントだけで終わらせて八時間放置した件(unittest.TestCase):
+    """Slackの新規投稿を検出していたが print するだけで、ログに流れて誰も読まなかった。"""
+
+    def setUp(self):
+        import tempfile
+        from silent_gate import Ledger
+        self.tmp = tempfile.TemporaryDirectory()
+        self.led = Ledger(Path(self.tmp.name) / "unread.json")
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_気づくまで消えない(self):
+        self.led.record("slack:1789597737", "今朝までに何を完了したか報告して", source="#jarvis-inbox")
+        self.assertTrue(self.led)                     # 未処理あり → 呼び出し側を止められる
+        self.assertEqual(len(self.led), 1)
+        self.assertIn("報告して", self.led.summary())
+
+    def test_反映先を書かないと消せない(self):
+        self.led.record("k", "審査結果")
+        with self.assertRaises(ValueError):
+            self.led.acknowledge("k", note="")
+        self.assertEqual(len(self.led), 1)            # 残ったまま
+
+    def test_反映先を書けば消える(self):
+        self.led.record("k", "審査結果")
+        self.led.acknowledge("k", note="manifestへPASSを反映")
+        self.assertEqual(len(self.led), 0)
+        self.assertFalse(self.led)
+
+    def test_同じ検出を二度記録しても最初の時刻が残る(self):
+        self.assertTrue(self.led.record("k", "1回目"))
+        self.assertFalse(self.led.record("k", "2回目"))
+        self.assertEqual(self.led.open_items()[0]["what"], "1回目")
+
+    def test_壊れたファイルを空として扱わない(self):
+        self.led.path.parent.mkdir(parents=True, exist_ok=True)
+        self.led.path.write_text("{壊れている", encoding="utf-8")
+        with self.assertRaises(RuntimeError):
+            self.led.open_items()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
